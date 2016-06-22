@@ -16,8 +16,6 @@ module Mastermind
   	  print @colors
   	end
 
-
-
   end
 
 end
