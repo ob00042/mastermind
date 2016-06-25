@@ -37,7 +37,7 @@ module Mastermind
 	  	  break if i==4
   		end
   		
-  		@indication_array.sort!
+  		@indication_array
   	end
 
   	def game_over(indication_array)
@@ -81,13 +81,36 @@ module Mastermind
   	  @guess_array
   	end
 
+  	def smart_pc_guess_array
+  	  @prev_guess=@guess_array
+  	  @guess_array=[]
+  	  i=0
+  	  loop do
+  	  	if @indication_array[i]=="RED"
+  	  	  @guess_array[i]=@prev_guess[i]
+  	  	else
+  	  	  guess=['R', 'G', 'B', 'Y', 'O', 'BL', 'W', 'BR'].sample
+  	  	  @guess_array<<guess
+  	  	end
+  	  	i+=1
+  	  	break if i==4
+  	  end
+  	  @guess_array
+  	end
+
   	def play_against_pc
   	  puts "Let's play against the PC"
   	  @colors=make_colors_array
   	  print @colors
   	  puts ""
-  	  10.times do
-  	    @guess_array=pc_guess_array
+  	  @guess_array=pc_guess_array
+  	  print @guess_array
+  	  puts ""
+  	  @indication_array=check
+  	  print @indication_array
+  	  puts ""
+  	  9.times do
+  	    @guess_array=smart_pc_guess_array
   	    print @guess_array
   	    puts ""
   	    @indication_array=check
