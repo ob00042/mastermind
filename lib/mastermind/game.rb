@@ -2,7 +2,7 @@ module Mastermind
 
   class Game
 
-  	attr_reader :player
+  	attr_accessor :player, :colors, :guess_array
 
   	def initialize(player)
   		@player=Player.new
@@ -10,49 +10,95 @@ module Mastermind
   	end
 
   	def making_guess_array
-  	  guess_array=[]
+  	  @guess_array=[]
   	  4.times do
   	  	puts "Give your guess in form of either one of 'R', 'G', 'B', 'Y', 'O', 'BL', 'W', 'BR'"
   	    guess=gets.chomp
-  	  	guess_array<<(guess)
+  	  	@guess_array<<(guess)
   	  end
-  	  guess_array
+  	  @guess_array
   	end
 
-  	def check(guess_array)
-  	  indication_array=[]
+  	def check
+  	  @indication_array=[]
   	  i=0
+  	  
   	  loop do
-	  	  if @colors[i]==guess_array[i]
-	  	  	indication_array<<"RED"
-	  	  elsif @colors.include?(guess_array[i])
-	  	  	indication_array<<"WHITE"
+  	  	  
+	  	  if @colors[i]==@guess_array[i]
+	  	  	@indication_array<<"RED"
 	  	  else
-	  	  	indication_array<<""
+	  	  	@indication_array<<"NONE"
 	  	  end
+	  	  if @colors.include?(@guess_array[i]) && @indication_array[i]!="RED"
+  		  	@indication_array[i]="WHITE"
+  		  end
 	  	  i+=1
 	  	  break if i==4
   		end
-  		indication_array
+  		
+  		@indication_array.sort!
   	end
 
   	def game_over(indication_array)
-  	  indication_array==["RED", "RED", "RED", "RED"] ? true : false
+  	  @indication_array==["RED", "RED", "RED", "RED"] ? true : false
   	end
 
   	def play
   	  puts "Let's play Mastermind!"
   	  10.times do
-  	  	guess_array=making_guess_array
-  	  	puts guess_array
-  	  	indication_array=check(guess_array)
-  	  	puts indication_array
-  	  	if game_over(indication_array)
+  	  	@guess_array=making_guess_array
+  	  	print @guess_array
+  	  	puts ""
+  	  	@indication_array=check
+  	  	print @indication_array
+  	  	puts ""
+  	  	if game_over(@indication_array)
   	  		puts "You won!"
   	  		return
   	  	end
   	  end
   	  puts "You lost!"
+  	end
+
+  	def make_colors_array
+  	  puts "Choose the colors!"
+  	  @colors=[]
+  	  4.times do
+  	  	puts "Give a color in the form of either one of 'R', 'G', 'B', 'Y', 'O', 'BL', 'W', 'BR'"
+  	  	color=gets.chomp
+  	  	@colors<<color
+  	  end
+  	  @colors
+  	end
+
+  	def pc_guess_array
+  	  @guess_array=[]
+  	  4.times do
+  	    guess=['R', 'G', 'B', 'Y', 'O', 'BL', 'W', 'BR'].sample
+  	    @guess_array<<guess
+  	  end
+  	  @guess_array
+  	end
+
+  	def play_against_pc
+  	  puts "Let's play against the PC"
+  	  @colors=make_colors_array
+  	  print @colors
+  	  puts ""
+  	  10.times do
+  	    @guess_array=pc_guess_array
+  	    print @guess_array
+  	    puts ""
+  	    @indication_array=check
+  	    print @indication_array
+  	    puts ""
+  	    if game_over(@indication_array)
+  	      puts "PC won!! AI will prevail!"
+  	 	  return
+  	    end
+  	  end
+  	  puts "You win!!!"
   	end
   end
 

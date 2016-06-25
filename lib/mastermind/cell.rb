@@ -14,6 +14,7 @@ module Mastermind
   	def randomize(colors=@colors)
   	  @colors.map! { |color| color=color_choices.sample }
   	  print @colors
+      @colors
   	end
 
   end
